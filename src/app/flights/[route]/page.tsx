@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import DateSlider from "./components/DateSlider";
 import FAQ from "./components/FAQ";
 import FilterSidebar from "./components/FilterSidebar";
@@ -141,6 +144,78 @@ const flights = [
 ];
 
 export default function FlightsPage() {
+  const [sortBy, setSortBy] = useState<"price" | "time" | "duration">("price");
+  const [filters, setFilters] = useState({
+    priceMin: 0,
+    priceMax: 10000000,
+    airlines: [] as string[],
+    ticketTypes: [] as string[],
+    times: [] as string[],
+    seatsMinimum: 1,
+  });
+
+  // Filter and sort flights
+  const sortedFlights = useMemo(() => {
+    const filtered = flights.filter((flight) => {
+      // Price filter
+      if (flight.price < filters.priceMin || flight.price > filters.priceMax) {
+        return false;
+      }
+
+      // Airline filter
+      if (
+        filters.airlines.length > 0 &&
+        !filters.airlines.includes(flight.airline)
+      ) {
+        return false;
+      }
+
+      // Ticket type filter
+      if (
+        filters.ticketTypes.length > 0 &&
+        !filters.ticketTypes.includes(flight.type)
+      ) {
+        return false;
+      }
+
+      // Seats available filter
+      if (flight.seatsLeft < filters.seatsMinimum) {
+        return false;
+      }
+
+      return true;
+    });
+
+    // Sort flights
+    const sorted = [...filtered];
+    if (sortBy === "price") {
+      sorted.sort((a, b) => a.price - b.price);
+    } else if (sortBy === "time") {
+      sorted.sort((a, b) => {
+        const timeA = parseInt(a.departureTime.split(":")[0]);
+        const timeB = parseInt(b.departureTime.split(":")[0]);
+        return timeA - timeB;
+      });
+    } else if (sortBy === "duration") {
+      sorted.sort((a, b) => {
+        const extractMinutes = (duration: string) => {
+          const match = duration.match(/(\d+)\s*ساعت.*?(\d+)\s*دقیقه/);
+          if (match) {
+            return parseInt(match[1]) * 60 + parseInt(match[2]);
+          }
+          return 0;
+        };
+        return extractMinutes(a.duration) - extractMinutes(b.duration);
+      });
+    }
+
+    return sorted;
+  }, [sortBy, filters]);
+
+  const handleFilterChange = (newFilters: typeof filters) => {
+    setFilters(newFilters);
+  };
+
   return (
     <div className="min-h-screen bg-[#f5f5f5]" dir="rtl">
       <SearchBar />
@@ -150,7 +225,10 @@ export default function FlightsPage() {
         <div className="flex gap-6">
           {/* Sidebar */}
           <aside className="w-[280px] shrink-0 hidden lg:block">
-            <FilterSidebar />
+            <FilterSidebar
+              onFilterChange={handleFilterChange}
+              currentFilters={filters}
+            />
           </aside>
 
           {/* Flight Results */}
@@ -160,27 +238,56 @@ export default function FlightsPage() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-[#6b7280]">مرتب‌سازی:</span>
                 <div className="flex gap-2">
-                  <button className="px-4 py-2 text-sm bg-[#fff3e0] text-[#f57c00] rounded-lg font-medium">
+                  <button
+                    onClick={() => setSortBy("price")}
+                    className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
+                      sortBy === "price"
+                        ? "bg-[#fff3e0] text-[#f57c00]"
+                        : "bg-white text-[#374151] hover:bg-gray-50"
+                    }`}
+                  >
                     ارزان‌ترین
                   </button>
-                  <button className="px-4 py-2 text-sm bg-white text-[#374151] rounded-lg hover:bg-gray-50">
+                  <button
+                    onClick={() => setSortBy("time")}
+                    className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
+                      sortBy === "time"
+                        ? "bg-[#fff3e0] text-[#f57c00]"
+                        : "bg-white text-[#374151] hover:bg-gray-50"
+                    }`}
+                  >
                     زودترین
                   </button>
-                  <button className="px-4 py-2 text-sm bg-white text-[#374151] rounded-lg hover:bg-gray-50">
+                  <button
+                    onClick={() => setSortBy("duration")}
+                    className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
+                      sortBy === "duration"
+                        ? "bg-[#fff3e0] text-[#f57c00]"
+                        : "bg-white text-[#374151] hover:bg-gray-50"
+                    }`}
+                  >
                     کوتاه‌ترین
                   </button>
                 </div>
               </div>
               <span className="text-sm text-[#6b7280]">
-                {flights.length} پرواز یافت شد
+                {sortedFlights.length} از {flights.length} پرواز
               </span>
             </div>
 
             {/* Flight Cards */}
             <div className="space-y-3">
-              {flights.map((flight) => (
-                <FlightCard key={flight.id} flight={flight} />
-              ))}
+              {sortedFlights.length > 0 ? (
+                sortedFlights.map((flight) => (
+                  <FlightCard key={flight.id} flight={flight} />
+                ))
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-[#6b7280]">
+                    هیچ پروازی با این معیارها یافت نشد
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

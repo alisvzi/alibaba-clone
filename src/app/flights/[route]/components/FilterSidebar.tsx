@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { Slider } from "@/components/ui/slider";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
@@ -15,53 +16,149 @@ const airlines = [
   { name: "قشم ایر", count: 3 },
 ];
 
-export default function FilterSidebar() {
+const convertToPersian = (num: number) => {
+  const persianDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+  return num
+    .toString()
+    .split("")
+    .map((digit) => persianDigits[parseInt(digit)] || digit)
+    .join("");
+};
+
+const formatPrice = (price: number) => {
+  const formatted = (price / 1000000).toFixed(1);
+  return `${formatted} میلیون`;
+};
+
+interface FilterSidebarProps {
+  onFilterChange: (filters: {
+    priceMin: number;
+    priceMax: number;
+    airlines: string[];
+    ticketTypes: string[];
+    times: string[];
+    seatsMinimum: number;
+  }) => void;
+  currentFilters: {
+    priceMin: number;
+    priceMax: number;
+    airlines: string[];
+    ticketTypes: string[];
+    times: string[];
+    seatsMinimum: number;
+  };
+}
+
+export default function FilterSidebar({
+  onFilterChange,
+  currentFilters,
+}: FilterSidebarProps) {
+  const [localFilters, setLocalFilters] = useState(currentFilters);
+
+  const handleAirlineToggle = (airline: string) => {
+    const updated = {
+      ...localFilters,
+      airlines: localFilters.airlines.includes(airline)
+        ? localFilters.airlines.filter((a) => a !== airline)
+        : [...localFilters.airlines, airline],
+    };
+    setLocalFilters(updated);
+    onFilterChange(updated);
+  };
+
+  const handleTicketTypeToggle = (type: string) => {
+    const updated = {
+      ...localFilters,
+      ticketTypes: localFilters.ticketTypes.includes(type)
+        ? localFilters.ticketTypes.filter((t) => t !== type)
+        : [...localFilters.ticketTypes, type],
+    };
+    setLocalFilters(updated);
+    onFilterChange(updated);
+  };
+
+  const handlePriceChange = (min: number, max: number) => {
+    const updated = {
+      ...localFilters,
+      priceMin: min,
+      priceMax: max,
+    };
+    setLocalFilters(updated);
+    onFilterChange(updated);
+  };
+
+  const handleResetFilters = () => {
+    const reset = {
+      priceMin: 0,
+      priceMax: 10000000,
+      airlines: [],
+      ticketTypes: [],
+      times: [],
+      seatsMinimum: 1,
+    };
+    setLocalFilters(reset);
+    onFilterChange(reset);
+  };
+
   return (
     <div className="bg-white rounded-xl border border-[#e5e7eb] overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-[#e5e7eb]">
         <span className="font-medium text-[#1f2937]">فیلترها</span>
-        <button className="text-sm text-[#f57c00] hover:underline">
+        <button
+          onClick={handleResetFilters}
+          className="text-sm text-[#f57c00] hover:underline"
+        >
           حذف فیلترها
         </button>
       </div>
 
       {/* Price Range */}
       <FilterSection title="محدوده قیمت" defaultOpen>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-[#6b7280]">از</span>
-            <span className="text-[#1f2937]">۲,۴۵۰,۰۰۰ تومان</span>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Slider
+              min={0}
+              max={10000000}
+              step={100000}
+              value={[localFilters.priceMin, localFilters.priceMax]}
+              onValueChange={(values) =>
+                handlePriceChange(values[0], values[1])
+              }
+              className="w-full"
+            />
           </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-[#6b7280]">تا</span>
-            <span className="text-[#1f2937]">۵,۰۰۰,۰۰۰ تومان</span>
-          </div>
-          <div className="relative pt-2">
-            <div className="h-1 bg-[#e5e7eb] rounded-full">
-              <div className="h-1 bg-[#f57c00] rounded-full w-1/2"></div>
-            </div>
-            <div className="absolute top-0 right-0 w-4 h-4 bg-white border-2 border-[#f57c00] rounded-full"></div>
-            <div className="absolute top-0 right-1/2 w-4 h-4 bg-white border-2 border-[#f57c00] rounded-full"></div>
-          </div>
-        </div>
-      </FilterSection>
 
-      {/* Departure Time */}
-      <FilterSection title="ساعت حرکت" defaultOpen>
-        <div className="grid grid-cols-2 gap-2">
-          <TimeButton label="صبح" time="۰۶:۰۰ - ۱۲:۰۰" />
-          <TimeButton label="ظهر" time="۱۲:۰۰ - ۱۸:۰۰" />
-          <TimeButton label="عصر" time="۱۸:۰۰ - ۲۴:۰۰" />
-          <TimeButton label="شب" time="۰۰:۰۰ - ۰۶:۰۰" />
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-[#6b7280]">حداقل:</span>
+              <span className="text-[#1f2937] font-medium">
+                {formatPrice(localFilters.priceMin)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[#6b7280]">حداکثر:</span>
+              <span className="text-[#1f2937] font-medium">
+                {formatPrice(localFilters.priceMax)}
+              </span>
+            </div>
+          </div>
         </div>
       </FilterSection>
 
       {/* Ticket Type */}
       <FilterSection title="نوع بلیط" defaultOpen>
         <div className="space-y-2">
-          <CheckboxItem label="سیستمی" checked />
-          <CheckboxItem label="چارتر" />
+          <CheckboxItem
+            label="سیستمی"
+            checked={localFilters.ticketTypes.includes("سیستمی")}
+            onChange={() => handleTicketTypeToggle("سیستمی")}
+          />
+          <CheckboxItem
+            label="چارتر"
+            checked={localFilters.ticketTypes.includes("چارتر")}
+            onChange={() => handleTicketTypeToggle("چارتر")}
+          />
         </div>
       </FilterSection>
 
@@ -73,33 +170,15 @@ export default function FilterSidebar() {
               key={airline.name}
               label={airline.name}
               count={airline.count}
+              checked={localFilters.airlines.includes(airline.name)}
+              onChange={() => handleAirlineToggle(airline.name)}
             />
           ))}
-        </div>
-      </FilterSection>
-
-      {/* Flight Class */}
-      <FilterSection title="کلاس پرواز">
-        <div className="space-y-2">
-          <CheckboxItem label="اکونومی" checked />
-          <CheckboxItem label="بیزینس" />
-          <CheckboxItem label="فرست کلاس" />
-        </div>
-      </FilterSection>
-
-      {/* Aircraft Type */}
-      <FilterSection title="نوع هواپیما">
-        <div className="space-y-2">
-          <CheckboxItem label="Airbus" />
-          <CheckboxItem label="Boeing" />
-          <CheckboxItem label="ATR" />
-          <CheckboxItem label="Fokker" />
         </div>
       </FilterSection>
     </div>
   );
 }
-
 function FilterSection({
   title,
   children,
@@ -129,49 +208,25 @@ function FilterSection({
   );
 }
 
-function TimeButton({ label, time }: { label: string; time: string }) {
-  return (
-    <button className="flex flex-col items-center p-2 border border-[#e5e7eb] rounded-lg hover:border-[#f57c00] transition-colors">
-      <span className="text-sm font-medium text-[#1f2937]">{label}</span>
-      <span className="text-xs text-[#6b7280]">{time}</span>
-    </button>
-  );
-}
-
 function CheckboxItem({
   label,
   checked = false,
   count,
+  onChange,
 }: {
   label: string;
   checked?: boolean;
   count?: number;
+  onChange?: () => void;
 }) {
   return (
     <label className="flex items-center gap-3 cursor-pointer group">
-      <div
-        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
-          checked
-            ? "bg-[#f57c00] border-[#f57c00]"
-            : "border-[#d1d5db] group-hover:border-[#f57c00]"
-        }`}
-      >
-        {checked && (
-          <svg
-            className="w-3 h-3 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={3}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        )}
-      </div>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="w-5 h-5 rounded border-2 border-[#d1d5db] accent-[#f57c00] cursor-pointer"
+      />
       <span className="text-sm text-[#374151] flex-1">{label}</span>
       {count !== undefined && (
         <span className="text-xs text-[#6b7280]">({count})</span>
