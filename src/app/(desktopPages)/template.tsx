@@ -1,5 +1,4 @@
 import Banner from "./_components/Banner";
-import Footer from "./_components/Footer/Footer";
 import SearchForm from "./_components/SearchForm/SearchForm";
 
 export default function Template({ children }: { children: React.ReactNode }) {
@@ -10,7 +9,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
         <SearchForm />
         {children}
       </div>
-      <Footer />
     </main>
   );
 }

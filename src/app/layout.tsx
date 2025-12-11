@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Header } from "./_components/layouts/Header/Header";
 
 import NextTopLoader from "nextjs-toploader";
+import Footer from "./_components/layouts/Footer/Footer";
 import "./globals.css";
 
 const alibaba = localFont({
@@ -47,6 +48,8 @@ export default function RootLayout({
         <Header />
 
         {children}
+
+        <Footer />
       </body>
     </html>
   );
