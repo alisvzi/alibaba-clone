@@ -90,7 +90,7 @@ const PassengerSelect = ({
         className={`absolute pointer-events-none transition-all duration-200 ease-in-out z-10 flex items-center gap-1 ${
           isMenuOpen || total > 0
             ? "top-2 text-xs text-gray-500 font-medium translate-y-0"
-            : "top-1/2 -translate-y-1/2 text-lg text-gray-500 font-bold"
+            : "top-1/2 -translate-y-1/2 text-base text-gray-500 font-bold"
         }`}
       >
         {!isMenuOpen && total === 0 && <Users className="w-5 h-5 opacity-50" />}
@@ -100,8 +100,8 @@ const PassengerSelect = ({
       <div
         className={`${isMenuOpen || total > 0 ? "pt-4" : "opacity-0"} w-full`}
       >
-        <span className="text-xl font-bold text-gray-800 font-mono">
-          {total}{" "}
+        <span className="text-base font-semibold text-gray-800 font-mono">
+          {total} {" "}
           <span className="text-sm font-normal text-gray-500 font-sans">
             مسافر
           </span>

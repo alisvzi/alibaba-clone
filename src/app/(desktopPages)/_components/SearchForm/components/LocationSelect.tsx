@@ -34,12 +34,12 @@ const CustomOption = (props: OptionProps<CityOption>) => {
     <components.Option {...props}>
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 last:border-0 cursor-pointer hover:bg-gray-100 transition-colors">
         <div className="flex flex-col text-right">
-          <span className="font-bold text-gray-800 text-base">
+          <span className="font-bold text-gray-800 text-sm">
             {props.data.label}
           </span>
-          <span className="text-sm text-gray-500 mt-1">همه فرودگاه‌ها</span>
+          <span className="text-xs text-gray-500 mt-1">همه فرودگاه‌ها</span>
         </div>
-        <span className="text-gray-500 text-sm font-mono bg-gray-100 px-2 py-1 rounded-md">
+        <span className="text-gray-500 text-xs font-mono bg-gray-100 px-2 py-1 rounded-md">
           {props.data.code}
         </span>
       </div>
@@ -153,7 +153,7 @@ const LocationSelect = ({
       ...base,
       color: "#4b5563", // gray-600
       fontWeight: 500,
-      fontSize: "1.1rem",
+      fontSize: "0.95rem",
       fontFamily: "inherit",
       margin: 0,
       padding: 0,
@@ -166,7 +166,7 @@ const LocationSelect = ({
       ...base,
       color: "#000",
       fontWeight: 700,
-      fontSize: "1.2rem",
+      fontSize: "1.0rem",
       margin: 0,
     }),
     indicatorsContainer: (base) => ({
@@ -187,7 +187,7 @@ const LocationSelect = ({
         className={`absolute pointer-events-none transition-all duration-200 ease-in-out z-10 flex items-center gap-1 ${
           hasValue || isMenuOpen
             ? "top-2 text-xs text-gray-500 font-medium translate-y-0"
-            : "top-1/2 -translate-y-1/2 text-lg text-gray-500 font-bold"
+            : "top-1/2 -translate-y-1/2 text-base text-gray-500 font-bold"
         }`}
       >
         {!hasValue && !isMenuOpen && <MapPin className="w-5 h-5 opacity-50" />}

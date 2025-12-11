@@ -20,6 +20,7 @@ const InternationalFlightSearchForm = () => {
   const [departDate, setDepartDate] = useState<DateObject | null>(null);
   const [returnDate, setReturnDate] = useState<DateObject | null>(null);
   const [passengers, setPassengers] = useState<PassengerCounts | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
 
   const handleSwap = () => {
@@ -65,6 +66,10 @@ const InternationalFlightSearchForm = () => {
     const infant = passengers?.infants ?? 0;
     const departing = departDate.format("YYYY-MM-DD");
     const path = `/flights/${origin.code}-${destination.code}?adult=${adult}&child=${child}&infant=${infant}&departing=${departing}`;
+    setIsSearching(true);
+    try {
+      router.prefetch(path);
+    } catch {}
     router.push(path);
   };
 
@@ -129,7 +134,7 @@ const InternationalFlightSearchForm = () => {
       </div>
 
       {/* Main Search Bar Container */}
-      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl shadow-sm divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white">
+      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl shadow-sm divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white overflow-hidden ">
         {/* Origin */}
         <div className="flex-1 relative z-30 group/origin">
           <LocationSelect
@@ -214,10 +219,19 @@ const InternationalFlightSearchForm = () => {
         <div className="p-2 flex items-center justify-center lg:w-auto w-full">
           <button
             onClick={handleSearch}
-            className="w-full lg:w-auto h-full min-h-[48px] px-10 bg-[#fdb713] hover:bg-[#fac852] text-black font-bold text-lg rounded-lg flex items-center justify-center gap-2 transition-colors whitespace-nowrap shadow-[0_4px_10px_rgba(253,183,19,0.3)]"
+            disabled={isSearching || !origin || !destination || !departDate}
+            className={`w-full lg:w-auto h-full min-h-[48px] px-10 rounded-lg flex items-center justify-center gap-3 transition-colors whitespace-nowrap shadow-[0_4px_10px_rgba(253,183,19,0.3)] ${
+              isSearching
+                ? "bg-[#fac852] text-black"
+                : "bg-[#fdb713] hover:bg-[#fac852] text-black"
+            } ${isSearching ? "cursor-wait" : ""}`}
           >
-            <Search className="w-5 h-5" />
-            جستجو
+            {isSearching ? (
+              <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+            ) : (
+              <Search className="w-5 h-5" />
+            )}
+            {isSearching ? "در حال انتقال..." : "جستجو"}
           </button>
         </div>
       </div>

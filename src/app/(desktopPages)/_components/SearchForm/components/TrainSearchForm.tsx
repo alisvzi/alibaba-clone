@@ -113,7 +113,7 @@ const TrainSearchForm = () => {
       </div>
 
       {/* Main Search Bar Container */}
-      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl shadow-sm divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white">
+      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl shadow-sm divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white overflow-hidden ">
         {/* Origin */}
         <div className="flex-1 relative z-30 group/origin">
           <LocationSelect
@@ -124,7 +124,9 @@ const TrainSearchForm = () => {
             className="rounded-t-xl lg:rounded-r-xl lg:rounded-tl-none h-full"
             isOpen={activeStep === "origin"}
             onMenuOpen={() => setActiveStep("origin")}
-            onMenuClose={() => setActiveStep((prev) => (prev === "origin" ? null : prev))}
+            onMenuClose={() =>
+              setActiveStep((prev) => (prev === "origin" ? null : prev))
+            }
             inputId="train-origin-input"
           />
           <div className="hidden lg:block absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 z-40">
@@ -148,7 +150,9 @@ const TrainSearchForm = () => {
             className="lg:pr-6 h-full"
             isOpen={activeStep === "destination"}
             onMenuOpen={() => setActiveStep("destination")}
-            onMenuClose={() => setActiveStep((prev) => (prev === "destination" ? null : prev))}
+            onMenuClose={() =>
+              setActiveStep((prev) => (prev === "destination" ? null : prev))
+            }
             inputId="train-destination-input"
           />
         </div>

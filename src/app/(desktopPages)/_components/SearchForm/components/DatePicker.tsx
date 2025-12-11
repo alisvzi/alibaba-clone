@@ -96,14 +96,14 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
       onClick={open}
     >
       {!hasValue && (
-        <div className="absolute inset-0 flex items-center gap-2 text-lg text-gray-500 font-bold pointer-events-none z-10">
+        <div className="absolute inset-0 flex items-center gap-2 text-base text-gray-500 font-bold pointer-events-none z-10">
           <CalendarDays className="w-5 h-5 opacity-50 mr-4" />
           <span>{label}</span>
         </div>
       )}
 
       {hasValue && (
-        <div className="pt-1 text-xl font-bold text-gray-800 h-[28px] flex items-center z-20">
+        <div className="pt-1 text-base font-semibold text-gray-800 h-[28px] flex items-center z-20">
           {formattedValue}
         </div>
       )}

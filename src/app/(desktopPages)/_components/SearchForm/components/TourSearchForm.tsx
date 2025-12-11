@@ -42,7 +42,7 @@ const TourSearchForm = () => {
     <div className="w-full px-0 flex flex-col gap-4">
       <div className="h-8"></div>
 
-      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl shadow-sm divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white">
+      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl shadow-sm divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white overflow-hidden ">
         {/* Origin */}
         <div className="flex-1 relative z-30 group/origin">
           <LocationSelect
