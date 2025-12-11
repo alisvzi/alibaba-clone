@@ -2,22 +2,26 @@ const ServicesCard = () => {
   return (
     <>
       <div className="flex items-center justify-between flex-wrap mb-4">
-        <img
-          src={
-            "https://cdn.alibaba.ir/cms/uploads/AL_Digitalmarketing_on_going_Safar_Card_Cardview_Banner_Desktop_03_10_29_84e3e680f4.webp"
-          }
-          alt="servis1"
-          width={590}
-          className="rounded-lg border border-border"
-        />
-        <img
-          src={
-            "https://cdn.alibaba.ir/cms/uploads/AL_Digitalmarketing_ongoing_Installmentpurchase_Cardview_Banner_Desktop_04_0_3_13_20a96cb7f0.webp"
-          }
-          alt="servis1"
-          width={590}
-          className="rounded-lg border border-border"
-        />
+        <div className="w-[590px] h-[244.5px] rounded-lg border border-border overflow-hidden">
+          <img
+            src={
+              "https://cdn.alibaba.ir/cms/uploads/AL_Digitalmarketing_on_going_Safar_Card_Cardview_Banner_Desktop_03_10_29_84e3e680f4.webp"
+            }
+            alt="servis1"
+            width={590}
+            className=""
+          />
+        </div>
+        <div className="w-[590px] h-[244.5px] rounded-lg border border-border overflow-hidden">
+          <img
+            src={
+              "https://cdn.alibaba.ir/cms/uploads/AL_Digitalmarketing_ongoing_Installmentpurchase_Cardview_Banner_Desktop_04_0_3_13_20a96cb7f0.webp"
+            }
+            alt="servis1"
+            width={590}
+            className=""
+          />
+        </div>
       </div>
       <div className="border border-border rounded-lg px-16 pt-2 overflow-hidden flex w-full flex-wrap items-center justify-center relative gap-x-8">
         <img

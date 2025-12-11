@@ -36,7 +36,7 @@ export default function FlightCard({ flight }: FlightProps) {
             {/* Airline Logo & Info */}
             <div className="flex items-center gap-3 min-w-[140px]">
               <img
-                src={flight.airlineLogo || "/placeholder.svg"}
+                src={"/img/airlinelogo.png" || "/placeholder.svg"}
                 alt={flight.airline}
                 className="w-10 h-10 rounded-lg object-contain"
               />

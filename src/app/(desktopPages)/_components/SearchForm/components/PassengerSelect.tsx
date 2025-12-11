@@ -2,6 +2,7 @@
 
 import { Minus, Plus, Users } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 export interface PassengerCounts {
   adults: number;
@@ -31,6 +32,9 @@ const PassengerSelect = ({
     infants: 0,
   });
   const containerRef = useRef<HTMLDivElement>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(
+    null
+  );
 
   const handleOpen = () => {
     if (onOpen) onOpen();
@@ -55,6 +59,19 @@ const PassengerSelect = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [handleClose]);
+
+  // compute menu position when opened
+  useEffect(() => {
+    if (isMenuOpen && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setMenuPos({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+    } else {
+      setMenuPos(null);
+    }
+  }, [isMenuOpen]);
 
   const updateCount = (
     type: "adults" | "children" | "infants",
@@ -101,124 +118,144 @@ const PassengerSelect = ({
         className={`${isMenuOpen || total > 0 ? "pt-4" : "opacity-0"} w-full`}
       >
         <span className="text-base font-semibold text-gray-800 font-mono">
-          {total} {" "}
+          {total}{" "}
           <span className="text-sm font-normal text-gray-500 font-sans">
             مسافر
           </span>
         </span>
       </div>
 
-      {isMenuOpen && (
-        <div className="absolute top-full left-0 mt-3 w-80 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-gray-100 p-5 z-50 cursor-default animate__animated animate__fadeIn animate__faster">
-          {/* Adults */}
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex flex-col text-right">
-              <span className="font-bold text-gray-800 text-sm">بزرگسال</span>
-              <span className="text-xs text-gray-400 mt-1">۱۲ سال به بالا</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateCount("adults", 1);
-                }}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-              >
-                <Plus size={16} />
-              </button>
-              <span className="font-bold w-4 text-center text-lg">
-                {counts.adults}
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateCount("adults", -1);
-                }}
-                className={`w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors ${
-                  counts.adults <= 1
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-50"
-                }`}
-                disabled={counts.adults <= 1}
-              >
-                <Minus size={16} />
-              </button>
-            </div>
-          </div>
-          {/* Children */}
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex flex-col text-right">
-              <span className="font-bold text-gray-800 text-sm">کودک</span>
-              <span className="text-xs text-gray-400 mt-1">۲ تا ۱۲ سال</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateCount("children", 1);
-                }}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-              >
-                <Plus size={16} />
-              </button>
-              <span className="font-bold w-4 text-center text-lg">
-                {counts.children}
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateCount("children", -1);
-                }}
-                className={`w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors ${
-                  counts.children <= 0
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-50"
-                }`}
-                disabled={counts.children <= 0}
-              >
-                <Minus size={16} />
-              </button>
-            </div>
-          </div>
-          {/* Infants */}
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex flex-col text-right">
-              <span className="font-bold text-gray-800 text-sm">نوزاد</span>
-              <span className="text-xs text-gray-400 mt-1">
-                ۱۰ روز تا ۲ سال
-              </span>
-            </div>
-            <div className="flex items-center gap-4">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateCount("infants", 1);
-                }}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
-              >
-                <Plus size={16} />
-              </button>
-              <span className="font-bold w-4 text-center text-lg">
-                {counts.infants}
-              </span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  updateCount("infants", -1);
-                }}
-                className={`w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors ${
-                  counts.infants <= 0
-                    ? "opacity-50 cursor-not-allowed"
-                    : "hover:bg-gray-50"
-                }`}
-                disabled={counts.infants <= 0}
-              >
-                <Minus size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {isMenuOpen && menuPos
+        ? createPortal(
+            <div
+              style={{ top: menuPos.top + 12, left: menuPos.left }}
+              className="fixed z-50 w-80 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] border border-gray-100 p-5 cursor-default animate__animated animate__fadeIn animate__faster"
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Adults */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex flex-col text-right">
+                  <span className="font-bold text-gray-800 text-sm">
+                    بزرگسال
+                  </span>
+                  <span className="text-xs text-gray-400 mt-1">
+                    ۱۲ سال به بالا
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCount("adults", 1);
+                    }}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                  >
+                    <Plus size={16} />
+                  </button>
+                  <span className="font-bold w-4 text-center text-lg">
+                    {counts.adults}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCount("adults", -1);
+                    }}
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors ${
+                      counts.adults <= 1
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-gray-50"
+                    }`}
+                    disabled={counts.adults <= 1}
+                  >
+                    <Minus size={16} />
+                  </button>
+                </div>
+              </div>
+              {/* Children */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex flex-col text-right">
+                  <span className="font-bold text-gray-800 text-sm">کودک</span>
+                  <span className="text-xs text-gray-400 mt-1">
+                    ۲ تا ۱۲ سال
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCount("children", 1);
+                    }}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                  >
+                    <Plus size={16} />
+                  </button>
+                  <span className="font-bold w-4 text-center text-lg">
+                    {counts.children}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCount("children", -1);
+                    }}
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors ${
+                      counts.children <= 0
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-gray-50"
+                    }`}
+                    disabled={counts.children <= 0}
+                  >
+                    <Minus size={16} />
+                  </button>
+                </div>
+              </div>
+              {/* Infants */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex flex-col text-right">
+                  <span className="font-bold text-gray-800 text-sm">نوزاد</span>
+                  <span className="text-xs text-gray-400 mt-1">
+                    ۱۰ روز تا ۲ سال
+                  </span>
+                </div>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCount("infants", 1);
+                    }}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                  >
+                    <Plus size={16} />
+                  </button>
+                  <span className="font-bold w-4 text-center text-lg">
+                    {counts.infants}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateCount("infants", -1);
+                    }}
+                    className={`w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors ${
+                      counts.infants <= 0
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-gray-50"
+                    }`}
+                    disabled={counts.infants <= 0}
+                  >
+                    <Minus size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 };

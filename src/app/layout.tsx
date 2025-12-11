@@ -39,7 +39,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body className={`${alibaba.className} antialiased`}>
+      <body
+        suppressHydrationWarning={true}
+        className={`${alibaba.className} antialiased`}
+      >
         <NextTopLoader showSpinner={false} color="#fdb713" />
         <Header />
 
