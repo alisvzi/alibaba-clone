@@ -67,7 +67,7 @@ const TrainSearchForm = () => {
       {/* Trip Type Selector */}
       <div className="flex items-center gap-4 pr-2">
         <div className="relative group">
-          <button className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-blue-600 transition-colors py-2">
+          <button className="flex items-center gap-2 text-sm font-bold text-gray-700 hover:text-blue-600 transition-colors p-2 rounded-full border border-gray-200 hover:border-blue-300 group-hover:ring-2 group-hover:ring-blue-200/50 focus:outline-none focus:ring-2 focus:ring-blue-300/50">
             {tripType === "one-way" ? "یک طرفه" : "رفت و برگشت"}
             <ChevronDown size={16} className="text-gray-400" />
           </button>
@@ -113,7 +113,7 @@ const TrainSearchForm = () => {
       </div>
 
       {/* Main Search Bar Container */}
-      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl shadow-sm divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white overflow-hidden ">
+      <div className="flex flex-col lg:flex-row items-stretch border border-gray-200 rounded-xl   divide-y lg:divide-y-0 lg:divide-x lg:divide-x-reverse relative z-20 bg-white overflow-hidden ">
         {/* Origin */}
         <div className="flex-1 relative z-30 group/origin">
           <LocationSelect
