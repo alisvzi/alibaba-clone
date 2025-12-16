@@ -1,12 +1,10 @@
 "use client";
 
-import type React from "react";
-
 import { Slider } from "@/components/ui/slider";
-import { useState } from "react";
-import FilterSection from "./FilterSection";
-import CheckboxItem from "./CheckboxItem";
 import { formatPrice } from "@/utils/formatters";
+import { useState } from "react";
+import CheckboxItem from "./CheckboxItem";
+import FilterSection from "./FilterSection";
 
 const airlines = [
   { name: "ماهان", count: 12 },

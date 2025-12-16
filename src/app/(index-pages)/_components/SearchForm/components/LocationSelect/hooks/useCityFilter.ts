@@ -1,5 +1,5 @@
+import { CityOption } from "@/types/search";
 import { useCallback, useState } from "react";
-import { CityOption } from "../types";
 
 export function useCityFilter(cities: CityOption[], initialQuery: string = "") {
   const [query, setQuery] = useState(initialQuery);

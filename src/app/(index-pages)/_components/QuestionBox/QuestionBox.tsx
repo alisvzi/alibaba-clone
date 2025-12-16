@@ -1,4 +1,4 @@
-import { QuestionBox as ReusableQuestionBox } from "@/components/common/QuestionBox";
+import { QuestionBox as ReusableQuestionBox } from "@/components/ui/QuestionBox";
 
 const questions = [
   {

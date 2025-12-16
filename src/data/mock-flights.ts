@@ -1,9 +1,6 @@
-// data/mock-flights.ts
-
 import { Flight, FlightFilters } from "@/types/flight";
 
 export const flights: Flight[] = [
-  // ... محتوای آرایه 'flights' از کد اصلی ...
   {
     id: 1,
     airline: "ماهان",
@@ -139,7 +136,6 @@ export const flights: Flight[] = [
   },
 ];
 
-// تعریف فیلترهای اولیه در اینجا برای سادگی در Import
 export const initialFilters: FlightFilters = {
   priceMin: 0,
   priceMax: 10000000,

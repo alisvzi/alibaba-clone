@@ -5,16 +5,17 @@ import { CityOption, DateRange } from "@/types/search";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DatePicker from "./DatePicker/DatePicker";
-import {
-  InternationalFormErrors,
-  InternationalFormState,
-  InternationalTripType,
-} from "./international.types";
+
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
 import SearchButton from "./SearchButton";
 
 import SelectBox from "@/components/ui/SelectBox";
+import {
+  InternationalFormErrors,
+  InternationalFormState,
+  InternationalTripType,
+} from "./types/international.types";
 
 const InternationalFlightSearchForm = () => {
   const [form, setForm] = useState<InternationalFormState>({

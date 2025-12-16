@@ -13,8 +13,8 @@ import {
 } from "./types/flight.types";
 
 import SelectBox from "@/components/ui/SelectBox";
+import { CityOption, DateRange } from "@/types/search";
 import { useSyncExternalStore } from "react";
-import { CityOption, DateRange } from "./types";
 
 const STORAGE_KEY = "flight_search_form_state";
 let cachedRaw: string | null = null;

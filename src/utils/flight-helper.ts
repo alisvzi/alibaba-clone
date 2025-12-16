@@ -9,22 +9,15 @@ export const SORT_KEYS = {
 
 export type SortKey = (typeof SORT_KEYS)[keyof typeof SORT_KEYS];
 
-/**
- * مدت زمان پرواز را از رشته فارسی به دقیقه تبدیل می‌کند.
- * مثال: "1 ساعت و 25 دقیقه" -> 85
- */
 const extractMinutesFromDuration = (duration: string): number => {
   const match = duration.match(/(\d+)\s*ساعت.*?(\d+)\s*دقیقه/);
   if (match) {
-    // گروه 1: ساعت، گروه 2: دقیقه
     return parseInt(match[1]) * 60 + parseInt(match[2]);
   }
-  return 0; // در صورت عدم تطابق
+  return 0;
 };
 
-/**
- * پروازها را بر اساس کلید مرتب‌سازی داده شده مرتب می‌کند.
- */
+
 export const sortFlights = (flights: Flight[], sortBy: SortKey): Flight[] => {
   const sorted = [...flights];
 
@@ -47,9 +40,7 @@ export const sortFlights = (flights: Flight[], sortBy: SortKey): Flight[] => {
   return sorted;
 };
 
-/**
- * پروازها را بر اساس فیلترهای اعمال‌شده فیلتر می‌کند.
- */
+
 export const filterFlights = (
   flights: Flight[],
   filters: typeof initialFilters

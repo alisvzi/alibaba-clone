@@ -6,9 +6,9 @@ import DatePicker from "./DatePicker/DatePicker";
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
 import SearchButton from "./SearchButton";
-import { TrainFormErrors, TrainFormState } from "./train.types";
 
 import SelectBox from "@/components/ui/SelectBox";
+import { TrainFormErrors, TrainFormState } from "./types/train.types";
 
 const TrainSearchForm = () => {
   const [form, setForm] = useState<TrainFormState>({

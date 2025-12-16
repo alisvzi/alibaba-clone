@@ -29,7 +29,9 @@ export default function DateSlider() {
                     : "bg-white border border-border hover:border-primary/50"
                 }`}
               >
-                <span className="text-xs text-muted-foreground">{item.day}</span>
+                <span className="text-xs text-muted-foreground">
+                  {item.day}
+                </span>
                 <span className="text-sm font-medium text-foreground">
                   {item.date}
                 </span>

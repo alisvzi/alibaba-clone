@@ -6,8 +6,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { CityOption } from "@/types/search";
 import React from "react";
-import { CityOption } from "../../types";
 
 function CityList({
   isOpen,

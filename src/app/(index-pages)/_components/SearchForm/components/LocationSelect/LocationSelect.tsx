@@ -1,8 +1,9 @@
 "use client";
 
+import { CityOption } from "@/types/search";
 import DualLocationSelect from "./components/DualLocationSelect";
 import SingleLocationSelect from "./components/SingleLocationSelect";
-import { CityOption, LocationSelectProps } from "./types";
+import { LocationSelectProps } from "./types";
 
 // --- Constants ---
 const DEFAULT_CITIES: CityOption[] = [

@@ -1,7 +1,6 @@
-export type DateRange = {
-  from?: Date;
-  to?: Date;
-};
+import type { DateRange as DayPickerDateRange } from "react-day-picker";
+
+export type DateRange = DayPickerDateRange;
 
 export type CityOption = {
   label: string;
@@ -22,4 +21,3 @@ export type SearchActiveStep =
   | "date"
   | "passengers"
   | null;
-

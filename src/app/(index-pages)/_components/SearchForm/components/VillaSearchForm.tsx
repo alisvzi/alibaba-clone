@@ -6,7 +6,7 @@ import DatePicker from "./DatePicker/DatePicker";
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
 import SearchButton from "./SearchButton";
-import { VillaFormErrors, VillaFormState } from "./villa.types";
+import { VillaFormErrors, VillaFormState } from "./types/villa.types";
 
 const VillaSearchForm = () => {
   const [form, setForm] = useState<VillaFormState>({

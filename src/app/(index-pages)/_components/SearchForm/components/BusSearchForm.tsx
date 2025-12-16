@@ -2,13 +2,13 @@
 
 import { CityOption, DateRange, TripType } from "@/types/search";
 import { useState } from "react";
-import { BusFormErrors, BusFormState } from "./bus.types";
 import DatePicker from "./DatePicker/DatePicker";
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
 import SearchButton from "./SearchButton";
 
 import SelectBox from "@/components/ui/SelectBox";
+import { BusFormErrors, BusFormState } from "./types/bus.types";
 
 const BusSearchForm = () => {
   const [form, setForm] = useState<BusFormState>({

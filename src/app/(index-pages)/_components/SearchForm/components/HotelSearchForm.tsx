@@ -3,10 +3,10 @@
 import { CityOption, DateRange } from "@/types/search";
 import { useState } from "react";
 import DatePicker from "./DatePicker/DatePicker";
-import { HotelFormErrors, HotelFormState } from "./hotel.types";
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
 import SearchButton from "./SearchButton";
+import { HotelFormErrors, HotelFormState } from "./types/hotel.types";
 
 const HotelSearchForm = () => {
   const [form, setForm] = useState<HotelFormState>({

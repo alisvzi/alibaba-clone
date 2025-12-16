@@ -6,7 +6,7 @@ import DatePicker from "./DatePicker/DatePicker";
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
 import SearchButton from "./SearchButton";
-import { TourFormErrors, TourFormState } from "./tour.types";
+import { TourFormErrors, TourFormState } from "./types/tour.types";
 
 const TourSearchForm = () => {
   const [form, setForm] = useState<TourFormState>({

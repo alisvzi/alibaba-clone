@@ -7,10 +7,7 @@ import {
 } from "lucide-react";
 import * as React from "react";
 
-import {
-  DayPicker as DayPickerPersian,
-  type DayButton as DayButtonPersian,
-} from "react-day-picker/persian";
+import { DayPicker as DayPickerPersian } from "react-day-picker/persian";
 
 import {
   DayPicker as DayPickerGregorian,
@@ -21,10 +18,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip"; // اضافه شده
 import { cn } from "@/lib/utils";
 
-// تعریف نوع DayButton برای تایپ عمومی
-type AnyDayButtonProps = React.ComponentProps<typeof DayButtonPersian>;
+type AnyDayButtonProps = React.ComponentProps<typeof DayButtonGregorian>;
 
-// اضافه کردن export برای استفاده در کامپوننت DatePicker
 export function CalendarDayButtonGeneric({
   className,
   day,
@@ -62,7 +57,7 @@ export function CalendarDayButtonGeneric({
 }
 
 function CalendarDayButtonPersian(
-  props: React.ComponentProps<typeof DayButtonPersian>
+  props: React.ComponentProps<typeof DayButtonGregorian>
 ) {
   return <CalendarDayButtonGeneric {...props} />;
 }
@@ -72,6 +67,18 @@ function CalendarDayButtonGregorian(
 ) {
   return <CalendarDayButtonGeneric {...props} />;
 }
+
+type CalendarProps = {
+  className?: string;
+  classNames?: Record<string, string>;
+  showOutsideDays?: boolean;
+  captionLayout?: "label" | "dropdown" | (string & {});
+  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
+  formatters?: Record<string, unknown>;
+  components?: Record<string, React.ComponentType<any>>;
+  calendar?: "jalali" | "gregorian";
+  [key: string]: any;
+};
 
 function Calendar({
   className,
@@ -83,10 +90,7 @@ function Calendar({
   components,
   calendar = "jalali",
   ...props
-}: React.ComponentProps<typeof DayPickerPersian> & {
-  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
-  calendar?: "jalali" | "gregorian";
-}) {
+}: CalendarProps) {
   const CurrentDayPicker =
     calendar === "jalali" ? DayPickerPersian : DayPickerGregorian;
   const CurrentDayButton =
@@ -104,7 +108,14 @@ function Calendar({
           String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
           className
         )}
-        captionLayout={captionLayout}
+        captionLayout={
+          captionLayout as
+            | "label"
+            | "dropdown"
+            | "dropdown-months"
+            | "dropdown-years"
+            | undefined
+        }
         formatters={{
           formatMonthDropdown: (date) =>
             date.toLocaleString("default", { month: "short" }),

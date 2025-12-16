@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Flight } from "@/types/flight";
 import { formatPrice } from "@/utils/formatters";
 import { Plane } from "lucide-react";
@@ -59,21 +60,21 @@ export default function FlightCard({ flight }: FlightProps) {
           </div>
 
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
-            <span className="px-2 py-1 text-xs bg-muted text-muted-foreground rounded">
-              {flight.class}
-            </span>
-            <span
-              className={`px-2 py-1 text-xs rounded ${
+            <Badge variant="secondary">{flight.class}</Badge>
+
+            <Badge
+              variant={flight.type === "سیستمی" ? "default" : "outline"}
+              className={
                 flight.type === "سیستمی"
-                  ? "bg-blue-50 text-blue-600"
-                  : "bg-orange-50 text-orange-600"
-              }`}
+                  ? "bg-blue-50 text-blue-600 hover:bg-blue-50"
+                  : "bg-orange-50 text-orange-600 hover:bg-orange-50"
+              }
             >
               {flight.type}
-            </span>
-            <span className="px-2 py-1 text-xs bg-muted text-muted-foreground rounded">
-              {flight.aircraft}
-            </span>
+            </Badge>
+
+            <Badge variant="secondary">{flight.aircraft}</Badge>
+
             {flight.seatsLeft < 10 && (
               <span className="text-xs text-destructive mr-auto">
                 {flight.seatsLeft} صندلی باقی‌مانده

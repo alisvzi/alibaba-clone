@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import { QuestionBox } from "@/components/common/QuestionBox";
+import { QuestionBox } from "@/components/ui/QuestionBox";
 import { flights, initialFilters } from "@/data/mock-flights";
 import {
   filterFlights,
