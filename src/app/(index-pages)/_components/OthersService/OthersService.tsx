@@ -29,30 +29,7 @@ const OthersService = () => {
             </div>
           </div>
         </a>
-        <div className={driverClass}></div>
-        <a
-          href="/installment-travel"
-          className="btn is-md is-raw flex-1 wrapper-sub-product"
-          aria-label="سفر اقساطی"
-        >
-          <div className="a-card badge-wrapper border-0">
-            <div className="a-card__body flex md:flex-row flex-col items-center justify-center md:px-3 md:py-2 p-0 w-full">
-              <div className="product-image">
-                <Image
-                  src="https://cdn.alibaba.ir/h2/desktop/assets/images/installment/instalment-icon-91668a01.svg"
-                  alt="Alibaba https://cdn.alibaba.ir/h2/desktop/assets/images/installment/instalment-icon-91668a01.svg"
-                  className="is-responsive is-animated"
-                  width={46}
-                  height={46}
-                  style={{ width: "auto", height: "auto" }}
-                />
-              </div>
-              <span className="text-body-md md:mr-1 text-grays-500">
-                سفر اقساطی
-              </span>
-            </div>
-          </div>
-        </a>
+
         <div className={driverClass}></div>
         <a
           href="/visa"
