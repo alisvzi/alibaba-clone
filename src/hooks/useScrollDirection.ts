@@ -10,13 +10,14 @@ export function useScrollDirection() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const scrollDelta = currentScrollY - lastScrollY;
+      const isPinned = document.body.classList.contains("header-pinned");
 
-      // Show header when scrolling up or at top
-      if (scrollDelta < -10 || currentScrollY < 50) {
+      // Show header when scrolling up or at top or pinned
+      if (isPinned || scrollDelta < -10 || currentScrollY < 50) {
         setIsVisible(true);
       }
       // Hide header when scrolling down past threshold
-      else if (scrollDelta > 10 && currentScrollY > 50) {
+      else if (!isPinned && scrollDelta > 10 && currentScrollY > 50) {
         setIsVisible(false);
       }
 

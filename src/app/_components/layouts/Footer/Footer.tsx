@@ -174,25 +174,29 @@ const Footer = () => {
                 <div className="flex gap-4">
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    className="text-gray-500 hover:text-blue-600 transition-colors"
+                    aria-label="اینستاگرام"
                   >
                     <Instagram size={24} />
                   </a>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    className="text-gray-500 hover:text-blue-600 transition-colors"
+                    aria-label="لینکدین"
                   >
                     <Linkedin size={24} />
                   </a>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    className="text-gray-500 hover:text-blue-600 transition-colors"
+                    aria-label="توییتر"
                   >
                     <Twitter size={24} />
                   </a>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-blue-600 transition-colors"
+                    className="text-gray-500 hover:text-blue-600 transition-colors"
+                    aria-label="یوتیوب"
                   >
                     <Youtube size={24} />
                   </a>
@@ -218,22 +222,22 @@ const Footer = () => {
               alt="Alibaba"
               width={80}
               height={30}
-              className="grayscale opacity-50"
+              className="grayscale opacity-50 w-auto h-auto"
             />
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-500">
               کلیه حقوق این سرویس (وب‌سایت و اپلیکیشن‌های موبایل) محفوظ و متعلق
               به شرکت سفرهای علی‌بابا می‌باشد. (نسخه 1.2.0)
             </span>
           </div>
           <div className="flex gap-4">
             {/* Certifications Placeholders */}
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
+            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-500">
               نماد اعتماد
             </div>
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
+            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-500">
               ساماندهی
             </div>
-            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-400">
+            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center text-xs text-gray-500">
               حقوق مسافر
             </div>
           </div>

@@ -17,14 +17,14 @@ const ListItem = ({
     <NavigationMenuItem>
       <NavigationMenuTrigger>{title}</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <ul className="grid w-[200px] gap-4">
-          <li>
-            {option.map((item) => (
-              <NavigationMenuLink asChild key={item.id}>
+        <ul className="grid w-[200px] gap-2">
+          {option.map((item) => (
+            <li key={item.id}>
+              <NavigationMenuLink asChild>
                 <Link href={item.href}>{item.title}</Link>
               </NavigationMenuLink>
-            ))}
-          </li>
+            </li>
+          ))}
         </ul>
       </NavigationMenuContent>
     </NavigationMenuItem>

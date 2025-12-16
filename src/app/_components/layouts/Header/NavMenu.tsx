@@ -17,7 +17,7 @@ const NavMenu: React.FC = () => {
 
   return (
     <NavigationMenu viewport={isMobile} dir="rtl">
-      <NavigationMenuList className="flex-wrap">
+      <NavigationMenuList className="flex-nowrap gap-1 no-scrollbar">
         <ListItem
           title="بلیط هواپیما"
           option={[
@@ -25,33 +25,45 @@ const NavMenu: React.FC = () => {
             { id: "2", href: "/iranout", title: "پرواز خارجی" },
           ]}
         />
-        <div className={driverClass}></div>
+        <NavigationMenuItem
+          aria-hidden
+          className={`${driverClass} hidden md:block`}
+        />
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
             <Link href="/train-ticket">بلیط قطار</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <div className={driverClass}></div>
+        <NavigationMenuItem
+          aria-hidden
+          className={`${driverClass} hidden md:block`}
+        />
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
             <Link href="/bus-ticket">بلیط اتوبوس</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <div className={driverClass}></div>
+        <NavigationMenuItem
+          aria-hidden
+          className={`${driverClass} hidden md:block`}
+        />
         <ListItem
           title="اقامت"
           option={[
             { id: "1", href: "/hotel", title: "هتل" },
-            { id: "2", href: "/accommodation", title: "ویلا و اقامتگاه" },
+            { id: "2", href: "/accommodation", title: "اقامت" },
           ]}
         />
-        <div className={driverClass}></div>
+        <NavigationMenuItem
+          aria-hidden
+          className={`${driverClass} hidden md:block`}
+        />
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
             <Link href="/tour">تور</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <div className={driverClass}></div>
+        <NavigationMenuItem aria-hidden className={driverClass} />
         <ListItem
           title="بیشتر"
           option={[

@@ -12,16 +12,21 @@ export function Header() {
 
   return (
     <header
-      className={`bg-white shadow-sm sticky top-0 z-50 transition-all duration-300 ease-in-out transform ${
-        isVisible
-          ? "translate-y-0 opacity-100"
-          : "-translate-y-full opacity-0 pointer-events-none"
+      className={`sticky top-0 z-50 bg-white shadow-sm transition-transform duration-300 ease-in-out ${
+        isVisible ? "translate-y-0" : "-translate-y-16"
       }`}
     >
-      <div className="px-0 md:px-5 max-w-364 mx-auto flex items-center justify-between h-16">
+      <div className="h-16 px-0 md:px-5 max-w-364 mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/" aria-label="GoHome" className="">
-            <Image src="/img/logo.svg" alt="Logo" width={130} height={48} />
+          <Link href="/" aria-label="GoHome">
+            <Image
+              src="/img/logo.svg"
+              alt="Logo"
+              width={130}
+              height={48}
+              className="w-[130px] h-[48px]"
+              sizes="130px"
+            />
           </Link>
           <NavMenu />
         </div>
@@ -40,6 +45,9 @@ export function Header() {
             icon={<User width={20} height={20} />}
           />
         </div>
+      </div>
+      <div id="header-portal-root" className="border-t border-border bg-white">
+        <div className="px-0 md:px-5 max-w-364 mx-auto"></div>
       </div>
     </header>
   );

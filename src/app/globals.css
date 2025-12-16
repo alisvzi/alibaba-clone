@@ -4,6 +4,19 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --text-xs: clamp(0.7rem, calc(0.7rem + 0.1vw), 0.75rem);
+  --text-sm: clamp(0.8rem, calc(0.8rem + 0.15vw), 0.875rem);
+  --text-base: clamp(0.9rem, calc(0.9rem + 0.2vw), 1rem);
+  --text-lg: clamp(1rem, calc(1rem + 0.25vw), 1.125rem);
+  --text-xl: clamp(1.1rem, calc(1.1rem + 0.3vw), 1.25rem);
+  --text-2xl: clamp(1.3rem, calc(1.3rem + 0.4vw), 1.5rem);
+  --text-3xl: clamp(1.6rem, calc(1.6rem + 0.5vw), 1.875rem);
+  --text-4xl: clamp(1.9rem, calc(1.9rem + 0.6vw), 2.25rem);
+  --text-5xl: clamp(2.5rem, calc(2.5rem + 0.8vw), 3rem);
+  --text-6xl: clamp(3rem, calc(3rem + 1vw), 3.75rem);
+  --text-7xl: clamp(3.5rem, calc(3.5rem + 1.2vw), 4.5rem);
+  --text-8xl: clamp(4.5rem, calc(4.5rem + 1.5vw), 6rem);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-alibaba: var(--font-alibaba), sans-serif;
@@ -38,6 +51,8 @@
   --color-card: var(--card);
 
   --color-gray-700: var(--gray-700);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -91,6 +106,9 @@
   --sidebar-ring: oklch(0.707 0.022 261.325);
 
   --gray-700: oklch(0.4349 0.0146 248.16);
+
+  --brand: #fdb713;
+  --brand-foreground: oklch(0.09 0 0);
 
   --radius: 0.5rem;
 }
@@ -159,4 +177,14 @@
 .banner-fade {
   animation: bannerFadeIn 0.5s ease-in-out;
   transition: opacity 0.5s ease-in-out;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
