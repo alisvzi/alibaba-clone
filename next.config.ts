@@ -11,6 +11,18 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.alibaba.ir",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.alibaba.ir",
+        port: "",
+        pathname: "/**",
+      },
     ],
     formats: ["image/webp", "image/avif"],
     dangerouslyAllowSVG: true,
