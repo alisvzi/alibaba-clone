@@ -11,6 +11,7 @@ export type LocationSelectProps = {
   onChange?: (city: CityOption) => void;
   onOriginChange?: (city: CityOption) => void;
   onDestinationChange?: (city: CityOption) => void;
+  onSwap?: () => void;
   hasError?: boolean;
   errorMessage?: string;
   cities?: CityOption[];

@@ -1,5 +1,6 @@
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
+import { CityOption } from "@/types/search";
 import { ArrowLeftRight } from "lucide-react";
 import {
   useCallback,
@@ -12,7 +13,6 @@ import { useCityFilter } from "../hooks/useCityFilter";
 import { useKeyboardNav } from "../hooks/useKeyboardNav";
 import CityInput from "./CityInput";
 import CityList from "./CityList";
-import { CityOption } from "@/types/search";
 
 function DualLocationSelect({
   originPlaceholder = "مبدا",
@@ -21,6 +21,7 @@ function DualLocationSelect({
   destinationValue,
   onOriginChange,
   onDestinationChange,
+  onSwap,
   hasError,
   errorMessage,
   cities,
@@ -31,6 +32,7 @@ function DualLocationSelect({
   destinationValue?: CityOption | null;
   onOriginChange?: (city: CityOption) => void;
   onDestinationChange?: (city: CityOption) => void;
+  onSwap?: () => void;
   hasError?: boolean;
   errorMessage?: string;
   cities: CityOption[];
@@ -150,8 +152,12 @@ function DualLocationSelect({
     originFilter.setQuery(destFilter.query);
     destFilter.setQuery(tempQuery);
 
-    if (destinationValue) onOriginChange?.(destinationValue);
-    if (originValue) onDestinationChange?.(originValue);
+    if (onSwap) {
+      onSwap();
+    } else {
+      if (destinationValue) onOriginChange?.(destinationValue);
+      if (originValue) onDestinationChange?.(originValue);
+    }
   }, [
     originFilter,
     destFilter,
@@ -159,6 +165,7 @@ function DualLocationSelect({
     destinationValue,
     onOriginChange,
     onDestinationChange,
+    onSwap,
   ]);
 
   return (

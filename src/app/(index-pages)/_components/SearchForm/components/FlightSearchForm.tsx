@@ -36,6 +36,7 @@ const FlightSearchForm = ({
     handleOriginChange,
     handleDestinationChange,
     handleDateRangeChange,
+    handleSwap,
     onStepChange,
   } = useSearchForm<FlightFormState>({
     tripType: "round-trip",
@@ -50,8 +51,6 @@ const FlightSearchForm = ({
 
   const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {}, []);
 
   const subscribe = (callback: () => void) => {
     if (typeof window === "undefined") return () => {};
@@ -89,28 +88,27 @@ const FlightSearchForm = ({
     getServerSnapshot
   );
 
-  const derivedInitial = (() => {
-    if (!persisted) return {};
-    const next: Partial<FlightFormState> = {
-      tripType: persisted.tripType,
-      origin: persisted.origin ?? null,
-      destination: persisted.destination ?? null,
-      passengers: persisted.passengers ?? null,
-      dateRange: undefined,
-      errors: {},
-      activeStep: null,
-    };
-    if (persisted.dateRange) {
-      const from = persisted.dateRange.from
-        ? new Date(persisted.dateRange.from)
-        : undefined;
-      const to = persisted.dateRange.to
-        ? new Date(persisted.dateRange.to)
-        : undefined;
-      if (from || to) next.dateRange = { from, to };
+  useEffect(() => {
+    if (persisted) {
+      const next: Partial<FlightFormState> = {
+        tripType: persisted.tripType,
+        origin: persisted.origin ?? null,
+        destination: persisted.destination ?? null,
+        passengers: persisted.passengers ?? null,
+        errors: {},
+      };
+      if (persisted.dateRange) {
+        const from = persisted.dateRange.from
+          ? new Date(persisted.dateRange.from)
+          : undefined;
+        const to = persisted.dateRange.to
+          ? new Date(persisted.dateRange.to)
+          : undefined;
+        if (from || to) next.dateRange = { from, to };
+      }
+      setForm((prev) => ({ ...prev, ...next }));
     }
-    return next;
-  })();
+  }, [persisted, setForm]);
 
   const handleOriginChangeInternal = (val: CityOption | null) => {
     handleOriginChange(val);
@@ -127,17 +125,11 @@ const FlightSearchForm = ({
 
     const effForm: FlightFormState = {
       ...form,
-      tripType:
-        form.tripType ??
-        (derivedInitial.tripType as FlightFormState["tripType"]) ??
-        "one-way",
-      origin: form.origin ?? derivedInitial.origin ?? null,
-      destination: form.destination ?? derivedInitial.destination ?? null,
-      dateRange:
-        form.dateRange ??
-        (derivedInitial.dateRange as FlightFormState["dateRange"]) ??
-        undefined,
-      passengers: form.passengers ?? derivedInitial.passengers ?? null,
+      tripType: form.tripType ?? "one-way",
+      origin: form.origin ?? null,
+      destination: form.destination ?? null,
+      dateRange: form.dateRange ?? undefined,
+      passengers: form.passengers ?? null,
     };
 
     if (!effForm.origin) {
@@ -238,13 +230,12 @@ const FlightSearchForm = ({
       <div className="flex flex-col lg:flex-row items-stretch relative z-20 bg-white gap-4">
         <div className="flex-[1.4] min-w-[230px] relative z-30">
           <NewLocationSelect
-            originValue={form.origin ?? derivedInitial.origin ?? null}
-            destinationValue={
-              form.destination ?? derivedInitial.destination ?? null
-            }
+            originValue={form.origin}
+            destinationValue={form.destination}
             onOriginChange={handleOriginChangeInternal}
             onDestinationChange={handleDestinationChangeInternal}
-            value={form.origin ?? derivedInitial.origin ?? null}
+            onSwap={handleSwap}
+            value={form.origin}
             onChange={(city) =>
               setForm((prev) => ({
                 ...prev,
@@ -267,11 +258,8 @@ const FlightSearchForm = ({
             endLabel="تاریخ برگشت"
             selected={
               form.tripType === "round-trip"
-                ? form.dateRange ??
-                  (derivedInitial.dateRange as typeof form.dateRange)
-                : form.dateRange?.from ??
-                  (derivedInitial.dateRange as { from?: Date } | undefined)
-                    ?.from
+                ? form.dateRange
+                : form.dateRange?.from
             }
             onSelect={handleDateRangeChange}
             isOpen={form.activeStep === "date"}

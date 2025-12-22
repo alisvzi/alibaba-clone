@@ -6,7 +6,7 @@ import {
 } from "@/types/search";
 
 export interface BaseFormState {
-  origin: CityOption | null;
+  origin?: CityOption | null;
   destination: CityOption | null;
   dateRange: DateRange | undefined;
   passengers: PassengerCounts | null;

@@ -17,7 +17,7 @@ export function useSearchForm<T extends BaseFormState>(initialState: T) {
     setForm((prev) => ({
       ...prev,
       origin: val,
-      activeStep: val ? "destination" : prev.activeStep,
+      activeStep: val ? "destination" : null,
       errors: { ...prev.errors, origin: undefined },
     }));
   }, []);
@@ -26,7 +26,7 @@ export function useSearchForm<T extends BaseFormState>(initialState: T) {
     setForm((prev) => ({
       ...prev,
       destination: val,
-      activeStep: val ? "date" : prev.activeStep,
+      activeStep: val ? "date" : null,
       errors: { ...prev.errors, destination: undefined },
     }));
   }, []);
@@ -67,6 +67,19 @@ export function useSearchForm<T extends BaseFormState>(initialState: T) {
     }));
   }, []);
 
+  const handleSwap = useCallback(() => {
+    setForm((prev) => ({
+      ...prev,
+      origin: prev.destination,
+      destination: prev.origin,
+      errors: {
+        ...prev.errors,
+        origin: undefined,
+        destination: undefined,
+      },
+    }));
+  }, []);
+
   return {
     form,
     setForm,
@@ -74,6 +87,7 @@ export function useSearchForm<T extends BaseFormState>(initialState: T) {
     handleOriginChange,
     handleDestinationChange,
     handleDateRangeChange,
+    handleSwap,
     setStep,
     onStepChange,
   };

@@ -24,6 +24,7 @@ const InternationalFlightSearchForm = () => {
     handleOriginChange,
     handleDestinationChange,
     handleDateRangeChange,
+    handleSwap,
     onStepChange,
   } = useSearchForm<InternationalFormState>({
     tripType: "round-trip",
@@ -130,6 +131,7 @@ const InternationalFlightSearchForm = () => {
             destinationValue={form.destination}
             onOriginChange={handleOriginChangeInternal}
             onDestinationChange={handleDestinationChangeInternal}
+            onSwap={handleSwap}
             value={form.origin}
             onChange={(city) =>
               setForm((prev) => ({

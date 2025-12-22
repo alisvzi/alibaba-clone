@@ -17,6 +17,7 @@ const TrainSearchForm = () => {
     handleOriginChange,
     handleDestinationChange,
     handleDateRangeChange,
+    handleSwap,
     onStepChange,
   } = useSearchForm<TrainFormState>({
     tripType: "one-way",
@@ -91,6 +92,7 @@ const TrainSearchForm = () => {
             destinationValue={form.destination}
             onOriginChange={handleOriginChangeInternal}
             onDestinationChange={handleDestinationChangeInternal}
+            onSwap={handleSwap}
             value={form.origin}
             onChange={(city) =>
               setForm((prev) => ({

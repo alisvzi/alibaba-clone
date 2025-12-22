@@ -101,7 +101,6 @@ export default function DatePicker({
   const handleRangeDayClick = (day: Date) => {
     const current = tempSelected as DateRange | undefined;
 
-    // ۱. اگر هیچ انتخابی نداریم یا هر دو مقدار خالی هستند
     if (!current || (!current.from && !current.to)) {
       const next = { from: day, to: undefined };
       setTempSelected(next);
@@ -109,18 +108,14 @@ export default function DatePicker({
       return;
     }
 
-    // ۲. اگر فقط تاریخ رفت انتخاب شده است
     if (current.from && !current.to) {
-      // اگر کاربر دوباره روی همان تاریخ رفت کلیک کرد، آن را لغو نکنیم (یا به دلخواه لغو کنیم)
-      // در اینجا طبق خواسته کاربر، اگر کلیک جدید باشد، بازه را کامل می‌کنیم
       if (day.getTime() === current.from.getTime()) {
-        return; // جلوگیری از انتخاب تاریخ تکراری به عنوان بازه
+        return;
       }
 
       let from = current.from;
       let to = day;
 
-      // اگر تاریخ انتخابی قبل از تاریخ رفت بود، جابجا شوند
       if (day < current.from) {
         from = day;
         to = current.from;
@@ -132,15 +127,10 @@ export default function DatePicker({
       return;
     }
 
-    // ۳. اگر قبلاً هر دو تاریخ (رفت و برگشت) انتخاب شده بودند (کلیک سوم)
-    // طبق خواسته کاربر، استیت ریست شده و تاریخ جدید به عنوان مبدا قرار می‌گیرد
     const next: DateRange = { from: day, to: undefined };
     setTempSelected(next);
     if (onSelect) onSelect(next);
   };
-
-  // حذف رنج مودیفایر دستی برای جلوگیری از تداخل با رنج داخلی خود تقویم
-  // react-day-picker خودش در حالت range، کلاس‌های range_start و range_end را مدیریت می‌کند
 
   const CustomDayButton = (
     props: React.ComponentProps<typeof CalendarDayButtonGeneric>
