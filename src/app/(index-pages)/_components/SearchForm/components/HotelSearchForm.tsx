@@ -1,7 +1,7 @@
 "use client";
 
-import { CityOption, DateRange } from "@/types/search";
-import { useState } from "react";
+import { CityOption } from "@/types/search";
+import { useSearchForm } from "../hooks/useSearchForm";
 import DatePicker from "./DatePicker/DatePicker";
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
@@ -9,7 +9,13 @@ import SearchButton from "./SearchButton";
 import { HotelFormErrors, HotelFormState } from "./types/hotel.types";
 
 const HotelSearchForm = () => {
-  const [form, setForm] = useState<HotelFormState>({
+  const {
+    form,
+    setForm,
+    handleDestinationChange,
+    handleDateRangeChange,
+    onStepChange,
+  } = useSearchForm<HotelFormState>({
     destination: null,
     dateRange: undefined,
     passengers: null,
@@ -17,40 +23,8 @@ const HotelSearchForm = () => {
     errors: {},
   });
 
-  const handleDestinationChange = (val: CityOption | null) => {
-    setForm((prev) => ({
-      ...prev,
-      destination: val,
-      activeStep: val ? "date" : prev.activeStep,
-      errors: { ...prev.errors, destination: undefined },
-    }));
-  };
-
-  const handleDateRangeChange = (val: DateRange | Date | undefined) => {
-    if (!val) {
-      setForm((prev) => ({
-        ...prev,
-        dateRange: undefined,
-        errors: { ...prev.errors, date: undefined },
-      }));
-      return;
-    }
-
-    if (val instanceof Date) {
-      setForm((prev) => ({
-        ...prev,
-        dateRange: { from: val, to: undefined },
-        errors: { ...prev.errors, date: undefined },
-      }));
-      return;
-    }
-
-    const range = val as DateRange;
-    setForm((prev) => ({
-      ...prev,
-      dateRange: range,
-      errors: { ...prev.errors, date: undefined },
-    }));
+  const handleDestinationChangeInternal = (val: CityOption | null) => {
+    handleDestinationChange(val);
   };
 
   const handleSearch = () => {
@@ -82,7 +56,7 @@ const HotelSearchForm = () => {
             mode="single"
             placeholder="مقصد"
             value={form.destination}
-            onChange={handleDestinationChange}
+            onChange={handleDestinationChangeInternal}
             hasError={!!form.errors.destination}
             errorMessage={form.errors.destination}
           />
@@ -96,17 +70,7 @@ const HotelSearchForm = () => {
             selected={form.dateRange}
             onSelect={handleDateRangeChange}
             isOpen={form.activeStep === "date"}
-            onOpenChange={(open) =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep:
-                  open && prev.activeStep !== "date"
-                    ? "date"
-                    : !open && prev.activeStep === "date"
-                    ? null
-                    : prev.activeStep,
-              }))
-            }
+            onOpenChange={(open) => onStepChange("date", open)}
             onConfirm={() =>
               setForm((prev) => ({
                 ...prev,
@@ -127,18 +91,8 @@ const HotelSearchForm = () => {
               }))
             }
             isOpen={form.activeStep === "passengers"}
-            onOpen={() =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep: "passengers",
-              }))
-            }
-            onClose={() =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep: null,
-              }))
-            }
+            onOpen={() => onStepChange("passengers", true)}
+            onClose={() => onStepChange("passengers", false)}
           />
         </div>
         <div className="flex items-center justify-center lg:w-auto w-full">

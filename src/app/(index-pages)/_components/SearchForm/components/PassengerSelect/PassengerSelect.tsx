@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
@@ -8,19 +7,9 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { PassengerCounts } from "@/types/search";
-import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
-
-interface PassengerSelectProps {
-  value?: PassengerCounts | null;
-  onChange?: (passengers: PassengerCounts) => void;
-  className?: string;
-  isOpen?: boolean;
-  onOpen?: () => void;
-  onClose?: () => void;
-  hasError?: boolean;
-  errorMessage?: string;
-}
+import { PassengerCounterItem } from "./PassengerCounterItem";
+import { PassengerSelectProps } from "./types";
 
 const PassengerSelect = ({
   value,
@@ -64,7 +53,6 @@ const PassengerSelect = ({
     setInternalError(null);
 
     const base = isControlled ? (effectiveCounts as PassengerCounts) : counts;
-
     const nextVal = base[type] + delta;
     if (nextVal < 0) return;
 
@@ -90,7 +78,6 @@ const PassengerSelect = ({
     }
 
     const nextCounts: PassengerCounts = { ...base, [type]: nextVal };
-
     const total = nextCounts.adults + nextCounts.children + nextCounts.infants;
     if (total > 9) {
       setInternalError("حداکثر ۹ مسافر در مجموع مجاز است");
@@ -98,10 +85,10 @@ const PassengerSelect = ({
     }
 
     if (isControlled) {
-      if (onChange) onChange(nextCounts);
+      onChange?.(nextCounts);
     } else {
       setCounts(nextCounts);
-      if (onChange) onChange(nextCounts);
+      onChange?.(nextCounts);
     }
   };
 
@@ -154,104 +141,30 @@ const PassengerSelect = ({
         </PopoverTrigger>
 
         <PopoverContent className="w-64 p-4 text-xs" align="start">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex flex-col text-right">
-              <span className="font-semibold text-gray-800 text-xs">
-                بزرگسال
-              </span>
-              <span className="text-[11px] text-gray-400 mt-1">
-                ۱۲ سال به بالا
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 border-0"
-                onClick={() => updateCount("adults", 1)}
-              >
-                <Plus size={14} />
-              </Button>
-              <span className="font-semibold w-5 text-center text-sm">
-                {effectiveCounts.adults}
-              </span>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="w-7 h-7 rounded-full"
-                onClick={() => updateCount("adults", -1)}
-                disabled={effectiveCounts.adults <= 1}
-              >
-                <Minus size={14} />
-              </Button>
-            </div>
-          </div>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex flex-col text-right">
-              <span className="font-semibold text-gray-800 text-xs">کودک</span>
-              <span className="text-[11px] text-gray-400 mt-1">
-                ۲ تا ۱۲ سال
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 border-0"
-                onClick={() => updateCount("children", 1)}
-              >
-                <Plus size={14} />
-              </Button>
-              <span className="font-semibold w-5 text-center text-sm">
-                {effectiveCounts.children}
-              </span>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="w-7 h-7 rounded-full"
-                onClick={() => updateCount("children", -1)}
-                disabled={effectiveCounts.children <= 0}
-              >
-                <Minus size={14} />
-              </Button>
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col text-right">
-              <span className="font-semibold text-gray-800 text-xs">نوزاد</span>
-              <span className="text-[11px] text-gray-400 mt-1">
-                ۱۰ روز تا ۲ سال
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 border-0"
-                onClick={() => updateCount("infants", 1)}
-              >
-                <Plus size={14} />
-              </Button>
-              <span className="font-semibold w-5 text-center text-sm">
-                {effectiveCounts.infants}
-              </span>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="w-7 h-7 rounded-full"
-                onClick={() => updateCount("infants", -1)}
-                disabled={effectiveCounts.infants <= 0}
-              >
-                <Minus size={14} />
-              </Button>
-            </div>
-          </div>
+          <PassengerCounterItem
+            label="بزرگسال"
+            subLabel="۱۲ سال به بالا"
+            count={effectiveCounts.adults}
+            onIncrement={() => updateCount("adults", 1)}
+            onDecrement={() => updateCount("adults", -1)}
+            minCount={1}
+          />
+          <PassengerCounterItem
+            label="کودک"
+            subLabel="۲ تا ۱۲ سال"
+            count={effectiveCounts.children}
+            onIncrement={() => updateCount("children", 1)}
+            onDecrement={() => updateCount("children", -1)}
+          />
+          <PassengerCounterItem
+            label="نوزاد"
+            subLabel="۱۰ روز تا ۲ سال"
+            count={effectiveCounts.infants}
+            onIncrement={() => updateCount("infants", 1)}
+            onDecrement={() => updateCount("infants", -1)}
+            maxCount={effectiveCounts.adults}
+          />
+
           {displayError && (
             <div className="mt-3 text-[11px] text-red-600 text-right">
               {displayError}

@@ -1,7 +1,7 @@
 "use client";
 
-import { CityOption, DateRange, TripType } from "@/types/search";
-import { useState } from "react";
+import { CityOption, TripType } from "@/types/search";
+import { useSearchForm } from "../hooks/useSearchForm";
 import DatePicker from "./DatePicker/DatePicker";
 import NewLocationSelect from "./LocationSelect/LocationSelect";
 import PassengerSelect from "./PassengerSelect";
@@ -11,7 +11,14 @@ import SelectBox from "@/components/ui/SelectBox";
 import { TrainFormErrors, TrainFormState } from "./types/train.types";
 
 const TrainSearchForm = () => {
-  const [form, setForm] = useState<TrainFormState>({
+  const {
+    form,
+    setForm,
+    handleOriginChange,
+    handleDestinationChange,
+    handleDateRangeChange,
+    onStepChange,
+  } = useSearchForm<TrainFormState>({
     tripType: "one-way",
     origin: null,
     destination: null,
@@ -21,49 +28,12 @@ const TrainSearchForm = () => {
     errors: {},
   });
 
-  const handleOriginChange = (val: CityOption | null) => {
-    setForm((prev) => ({
-      ...prev,
-      origin: val,
-      activeStep: val ? "destination" : prev.activeStep,
-      errors: { ...prev.errors, origin: undefined },
-    }));
+  const handleOriginChangeInternal = (val: CityOption | null) => {
+    handleOriginChange(val);
   };
 
-  const handleDestinationChange = (val: CityOption | null) => {
-    setForm((prev) => ({
-      ...prev,
-      destination: val,
-      activeStep: val ? "date" : prev.activeStep,
-      errors: { ...prev.errors, destination: undefined },
-    }));
-  };
-
-  const handleDateRangeChange = (val: DateRange | Date | undefined) => {
-    if (!val) {
-      setForm((prev) => ({
-        ...prev,
-        dateRange: undefined,
-        errors: { ...prev.errors, date: undefined },
-      }));
-      return;
-    }
-
-    if (val instanceof Date) {
-      setForm((prev) => ({
-        ...prev,
-        dateRange: { from: val, to: undefined },
-        errors: { ...prev.errors, date: undefined },
-      }));
-      return;
-    }
-
-    const range = val as DateRange;
-    setForm((prev) => ({
-      ...prev,
-      dateRange: range,
-      errors: { ...prev.errors, date: undefined },
-    }));
+  const handleDestinationChangeInternal = (val: CityOption | null) => {
+    handleDestinationChange(val);
   };
 
   const handleSearch = () => {
@@ -119,8 +89,8 @@ const TrainSearchForm = () => {
           <NewLocationSelect
             originValue={form.origin}
             destinationValue={form.destination}
-            onOriginChange={handleOriginChange}
-            onDestinationChange={handleDestinationChange}
+            onOriginChange={handleOriginChangeInternal}
+            onDestinationChange={handleDestinationChangeInternal}
             value={form.origin}
             onChange={(city) =>
               setForm((prev) => ({
@@ -149,17 +119,7 @@ const TrainSearchForm = () => {
             }
             onSelect={handleDateRangeChange}
             isOpen={form.activeStep === "date"}
-            onOpenChange={(open) =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep:
-                  open && prev.activeStep !== "date"
-                    ? "date"
-                    : !open && prev.activeStep === "date"
-                    ? null
-                    : prev.activeStep,
-              }))
-            }
+            onOpenChange={(open) => onStepChange("date", open)}
             onConfirm={() =>
               setForm((prev) => ({
                 ...prev,
@@ -180,18 +140,8 @@ const TrainSearchForm = () => {
               }))
             }
             isOpen={form.activeStep === "passengers"}
-            onOpen={() =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep: "passengers",
-              }))
-            }
-            onClose={() =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep: null,
-              }))
-            }
+            onOpen={() => onStepChange("passengers", true)}
+            onClose={() => onStepChange("passengers", false)}
             hasError={!!form.errors.passengers}
             errorMessage={form.errors.passengers}
           />

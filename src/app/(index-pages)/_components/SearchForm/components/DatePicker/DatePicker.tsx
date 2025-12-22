@@ -2,72 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Calendar, CalendarDayButtonGeneric } from "@/components/ui/calendar";
+import { useClickOutside } from "@/hooks/useClickOutside";
+import { formatCustomDate } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import type { DateRange } from "@/types/search";
-import { addDays, format } from "date-fns";
 import { enUS as localeGregorian } from "date-fns/locale";
-import { ArrowLeftRight, Check } from "lucide-react";
+import { CalendarDays, Check } from "lucide-react";
 import * as React from "react";
-import DateObject from "react-date-object";
-import persian from "react-date-object/calendars/persian";
-import persian_fa from "react-date-object/locales/persian_fa";
-import { Matcher } from "react-day-picker";
-import { DateInputBoxProps, DatePickerProps } from "./types";
-
-function DateInputBox({
-  value,
-  label,
-  isActive,
-  className,
-  ...props
-}: DateInputBoxProps) {
-  const isFloating = isActive || value.length > 0;
-
-  return (
-    <div
-      className={cn(
-        "relative flex items-center rounded-lg bg-background transition-all duration-200 h-11 w-full",
-        isActive ? "border-primary ring-2 ring-primary/20" : "border-input",
-        className
-      )}
-      {...props}
-    >
-      <span
-        className={cn(
-          "absolute right-3 pointer-events-none transition-all duration-200 ease-in-out px-1 bg-background text-muted-foreground",
-          isFloating
-            ? "-top-2.5 text-xs text-primary scale-90 -mr-1"
-            : "top-3 text-sm"
-        )}
-      >
-        {label}
-      </span>
-      <div className="px-3 py-2 w-full bg-transparent outline-none text-sm h-full flex items-center pt-3 select-none">
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function useClickOutside(
-  ref: React.RefObject<HTMLElement>,
-  handler: (event: MouseEvent | TouchEvent) => void
-) {
-  React.useEffect(() => {
-    const listener = (event: MouseEvent | TouchEvent) => {
-      if (!ref.current || ref.current.contains(event.target as Node)) {
-        return;
-      }
-      handler(event);
-    };
-    document.addEventListener("mousedown", listener);
-    document.addEventListener("touchstart", listener);
-    return () => {
-      document.removeEventListener("mousedown", listener);
-      document.removeEventListener("touchstart", listener);
-    };
-  }, [ref, handler]);
-}
+import { DateInputBox } from "./DateInputBox";
+import { DatePickerProps } from "./types";
 
 export default function DatePicker({
   mode = "single",
@@ -103,50 +46,28 @@ export default function DatePicker({
     }
   };
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    setTempSelected(selected);
+  }, [selected]);
 
   useClickOutside(containerRef as React.RefObject<HTMLElement>, () =>
     setOpen(false)
   );
 
   const formatDate = React.useCallback(
-    (date: Date | undefined) => {
-      if (!date) return "";
-      if (calendarType === "jalali") {
-        const d = new DateObject({
-          date,
-          calendar: persian,
-          locale: persian_fa,
-        });
-        return d.format("D MMMM");
-      }
-      return format(date, "d MMMM", { locale: localeGregorian });
-    },
+    (date: Date | undefined) => formatCustomDate(date, calendarType, "D MMMM"),
     [calendarType]
   );
 
   let displayStartValue = "";
   let displayEndValue = "";
 
-  const formatDisplayInput = (date: Date | undefined) => {
-    if (!date) return "";
-    if (calendarType === "jalali") {
-      const d = new DateObject({
-        date,
-        calendar: persian,
-        locale: persian_fa,
-      });
-      return d.format("D MMMM");
-    }
-    return format(date, "d MMMM", { locale: localeGregorian });
-  };
-
   if (mode === "range" && selected) {
     const range = selected as DateRange;
-    displayStartValue = formatDisplayInput(range.from);
-    displayEndValue = formatDisplayInput(range.to);
+    displayStartValue = formatDate(range.from);
+    displayEndValue = formatDate(range.to);
   } else if (mode === "single" && selected) {
-    displayStartValue = formatDisplayInput(selected as Date);
+    displayStartValue = formatDate(selected as Date);
   }
 
   const footerStartValue = React.useMemo(() => {
@@ -180,20 +101,26 @@ export default function DatePicker({
   const handleRangeDayClick = (day: Date) => {
     const current = tempSelected as DateRange | undefined;
 
+    // ۱. اگر هیچ انتخابی نداریم یا هر دو مقدار خالی هستند
     if (!current || (!current.from && !current.to)) {
-      setTempSelected({ from: day, to: undefined });
+      const next = { from: day, to: undefined };
+      setTempSelected(next);
+      if (onSelect) onSelect(next);
       return;
     }
 
+    // ۲. اگر فقط تاریخ رفت انتخاب شده است
     if (current.from && !current.to) {
+      // اگر کاربر دوباره روی همان تاریخ رفت کلیک کرد، آن را لغو نکنیم (یا به دلخواه لغو کنیم)
+      // در اینجا طبق خواسته کاربر، اگر کلیک جدید باشد، بازه را کامل می‌کنیم
       if (day.getTime() === current.from.getTime()) {
-        setTempSelected({ from: current.from, to: undefined });
-        return;
+        return; // جلوگیری از انتخاب تاریخ تکراری به عنوان بازه
       }
 
       let from = current.from;
       let to = day;
 
+      // اگر تاریخ انتخابی قبل از تاریخ رفت بود، جابجا شوند
       if (day < current.from) {
         from = day;
         to = current.from;
@@ -201,48 +128,19 @@ export default function DatePicker({
 
       const next: DateRange = { from, to };
       setTempSelected(next);
-      if (onSelect) {
-        onSelect(next);
-      }
+      if (onSelect) onSelect(next);
       return;
     }
 
+    // ۳. اگر قبلاً هر دو تاریخ (رفت و برگشت) انتخاب شده بودند (کلیک سوم)
+    // طبق خواسته کاربر، استیت ریست شده و تاریخ جدید به عنوان مبدا قرار می‌گیرد
     const next: DateRange = { from: day, to: undefined };
     setTempSelected(next);
-    if (onSelect) {
-      onSelect(next);
-    }
+    if (onSelect) onSelect(next);
   };
 
-  const rangeSelectedMatcher = React.useMemo(() => {
-    if (mode !== "range") return undefined;
-    const range = tempSelected as DateRange | undefined;
-    if (!range?.from) return undefined;
-    if (!range.to) return range.from;
-    return { from: range.from, to: range.to } as DateRange;
-  }, [tempSelected, mode]);
-
-  const rangeModifiers = React.useMemo(() => {
-    if (mode !== "range") return undefined;
-    const range = tempSelected as DateRange | undefined;
-    if (!range) return undefined;
-
-    const base: Record<string, Date | Matcher> = {
-      range_start: range.from as Date,
-      range_end: range.to as Date,
-    };
-
-    if (range.from && range.to) {
-      const middleFrom = addDays(range.from, 1);
-      const middleTo = addDays(range.to, -1);
-
-      if (middleFrom.getTime() <= middleTo.getTime()) {
-        base.range_middle = { from: middleFrom, to: middleTo };
-      }
-    }
-
-    return base;
-  }, [tempSelected, mode]);
+  // حذف رنج مودیفایر دستی برای جلوگیری از تداخل با رنج داخلی خود تقویم
+  // react-day-picker خودش در حالت range، کلاس‌های range_start و range_end را مدیریت می‌کند
 
   const CustomDayButton = (
     props: React.ComponentProps<typeof CalendarDayButtonGeneric>
@@ -301,20 +199,18 @@ export default function DatePicker({
               onClick={toggleCalendarType}
               className="h-8 gap-2 text-xs"
             >
-              <ArrowLeftRight className="size-3" />
+              <CalendarDays className="size-3" />
               تغییر به {calendarType === "jalali" ? "میلادی" : "شمسی"}
             </Button>
           </div>
 
           <div className="p-2" dir={calendarType === "jalali" ? "rtl" : "ltr"}>
             <Calendar
+              key={`${calendarType}-${mode}-${
+                (tempSelected as DateRange)?.to ? "full" : "partial"
+              }`}
               mode={mode === "range" ? "range" : "single"}
-              selected={
-                mode === "range"
-                  ? (rangeSelectedMatcher as DateRange | undefined)
-                  : (tempSelected as Date | undefined)
-              }
-              modifiers={mode === "range" ? rangeModifiers : undefined}
+              selected={tempSelected as any}
               showOutsideDays={false}
               onDayClick={mode === "range" ? handleRangeDayClick : undefined}
               onSelect={mode === "single" ? handleSingleSelect : undefined}

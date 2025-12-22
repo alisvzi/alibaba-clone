@@ -13,8 +13,9 @@ import {
 } from "./types/flight.types";
 
 import SelectBox from "@/components/ui/SelectBox";
-import { CityOption, DateRange } from "@/types/search";
+import { CityOption } from "@/types/search";
 import { useSyncExternalStore } from "react";
+import { useSearchForm } from "../hooks/useSearchForm";
 
 const STORAGE_KEY = "flight_search_form_state";
 let cachedRaw: string | null = null;
@@ -29,7 +30,14 @@ const FlightSearchForm = ({
   initialValues,
   onSearchComplete,
 }: FlightSearchFormProps) => {
-  const [form, setForm] = useState<FlightFormState>(() => ({
+  const {
+    form,
+    setForm,
+    handleOriginChange,
+    handleDestinationChange,
+    handleDateRangeChange,
+    onStepChange,
+  } = useSearchForm<FlightFormState>({
     tripType: "round-trip",
     origin: null,
     destination: null,
@@ -38,7 +46,8 @@ const FlightSearchForm = ({
     activeStep: null,
     errors: {},
     ...(initialValues ?? {}),
-  }));
+  });
+
   const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
 
@@ -103,50 +112,15 @@ const FlightSearchForm = ({
     return next;
   })();
 
-  const handleOriginChange = (val: CityOption | null) => {
-    setForm((prev) => ({
-      ...prev,
-      origin: val,
-      activeStep: val ? "destination" : prev.activeStep,
-      errors: { ...prev.errors, origin: undefined },
-    }));
+  const handleOriginChangeInternal = (val: CityOption | null) => {
+    handleOriginChange(val);
   };
 
-  const handleDestinationChange = (val: CityOption | null) => {
-    setForm((prev) => ({
-      ...prev,
-      destination: val,
-      activeStep: val ? "date" : prev.activeStep,
-      errors: { ...prev.errors, destination: undefined },
-    }));
+  const handleDestinationChangeInternal = (val: CityOption | null) => {
+    handleDestinationChange(val);
   };
 
-  const handleDateRangeChange = (val: DateRange | Date | undefined) => {
-    if (!val) {
-      setForm((prev) => ({
-        ...prev,
-        dateRange: undefined,
-        errors: { ...prev.errors, date: undefined },
-      }));
-      return;
-    }
-
-    if (val instanceof Date) {
-      setForm((prev) => ({
-        ...prev,
-        dateRange: { from: val, to: undefined },
-        errors: { ...prev.errors, date: undefined },
-      }));
-      return;
-    }
-
-    const range = val as DateRange;
-    setForm((prev) => ({
-      ...prev,
-      dateRange: range,
-      errors: { ...prev.errors, date: undefined },
-    }));
-  };
+  // Remove redundant handleDateRangeChange since we use the one from useSearchForm
 
   const handleSearch = () => {
     const errors: FlightFormErrors = {};
@@ -268,8 +242,8 @@ const FlightSearchForm = ({
             destinationValue={
               form.destination ?? derivedInitial.destination ?? null
             }
-            onOriginChange={handleOriginChange}
-            onDestinationChange={handleDestinationChange}
+            onOriginChange={handleOriginChangeInternal}
+            onDestinationChange={handleDestinationChangeInternal}
             value={form.origin ?? derivedInitial.origin ?? null}
             onChange={(city) =>
               setForm((prev) => ({
@@ -301,17 +275,7 @@ const FlightSearchForm = ({
             }
             onSelect={handleDateRangeChange}
             isOpen={form.activeStep === "date"}
-            onOpenChange={(open) =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep:
-                  open && prev.activeStep !== "date"
-                    ? "date"
-                    : !open && prev.activeStep === "date"
-                    ? null
-                    : prev.activeStep,
-              }))
-            }
+            onOpenChange={(open) => onStepChange("date", open)}
             onConfirm={() =>
               setForm((prev) => ({
                 ...prev,
@@ -332,18 +296,8 @@ const FlightSearchForm = ({
               }))
             }
             isOpen={form.activeStep === "passengers"}
-            onOpen={() =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep: "passengers",
-              }))
-            }
-            onClose={() =>
-              setForm((prev) => ({
-                ...prev,
-                activeStep: null,
-              }))
-            }
+            onOpen={() => onStepChange("passengers", true)}
+            onClose={() => onStepChange("passengers", false)}
             hasError={!!form.errors.passengers}
             errorMessage={form.errors.passengers}
           />
