@@ -27,8 +27,8 @@ const ServicesCard = () => {
         <Image
           src="https://cdn.alibaba.ir/h2/desktop/assets/images/app-mobile/qrcode-56155e39.png"
           alt="بارکد دانلود اپلیکیشن علی بابا"
-          width={0}
-          height={0}
+          width={148}
+          height={148}
           className="ml-0 w-[148px] h-auto"
         />
         <div

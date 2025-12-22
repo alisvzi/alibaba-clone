@@ -1,4 +1,3 @@
-import { getBannerSrc } from "@/lib/bannerMap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, {
@@ -40,7 +39,6 @@ const SearchFormTabs: React.FC<TabsProps> = ({ tabs }) => {
     []
   );
 
-  // measure and position the indicator after layout to avoid flicker
   useLayoutEffect(() => {
     const updateIndicator = () => {
       const tab = tabRefs.current[activeTab];
@@ -50,10 +48,8 @@ const SearchFormTabs: React.FC<TabsProps> = ({ tabs }) => {
       }
     };
 
-    // run on next frame to ensure DOM is ready
     const raf = requestAnimationFrame(updateIndicator);
 
-    // keep indicator in sync on resize
     const onResize = () => updateIndicator();
     window.addEventListener("resize", onResize);
 
@@ -62,15 +58,6 @@ const SearchFormTabs: React.FC<TabsProps> = ({ tabs }) => {
       window.removeEventListener("resize", onResize);
     };
   }, [activeTab]);
-
-  // Prefetch banner image for a given href to reduce perceived load when navigating
-  const prefetchBanner = (href: string) => {
-    try {
-      const src = getBannerSrc(href);
-      const img = new Image();
-      img.src = src;
-    } catch {}
-  };
 
   return (
     <div className="relative z-10 -mt-24 bg-white pt-4 pb-6 mb-6 border border-gray-100 rounded-xl shadow-lg">
@@ -86,7 +73,6 @@ const SearchFormTabs: React.FC<TabsProps> = ({ tabs }) => {
               onClick={() => setActiveTab(index)}
               role="tab"
               aria-selected={activeTab === index}
-              onMouseEnter={() => prefetchBanner(tab.href)}
               className={`px-6 py-3 text-sm text-center font-semibold transition-colors duration-200 cursor-pointer inline-flex flex-col items-center gap-1 ${
                 activeTab === index
                   ? "text-blue-600"

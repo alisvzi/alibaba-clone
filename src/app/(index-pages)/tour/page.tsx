@@ -7,7 +7,6 @@ const Tour = () => {
   return (
     <>
       <OthersService />
-      <ServicesCard />
       <QuestionBox />
       <SeoContent />
     </>

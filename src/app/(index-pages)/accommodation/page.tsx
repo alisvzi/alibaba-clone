@@ -7,7 +7,6 @@ const Accommodation = () => {
   return (
     <>
       <OthersService />
-      <ServicesCard />
       <QuestionBox />
       <SeoContent />
     </>

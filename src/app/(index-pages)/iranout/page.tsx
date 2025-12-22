@@ -7,7 +7,6 @@ const IranOut = () => {
   return (
     <>
       <OthersService />
-      <ServicesCard />
       <QuestionBox />
       <SeoContent />
     </>
